@@ -1,55 +1,26 @@
-// src/components/Navbar.tsx
-import Link from 'next/link';
-
-interface NavbarProps {
-  isAuthenticated?: boolean;
-  userRole?: string;
-}
-
-export default function Navbar({ isAuthenticated = false, userRole = '' }: NavbarProps) {
-  return (
-    <nav className="bg-white shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
-          <Link href="/" className="font-bold text-xl text-blue-600">
-            🍳 Recetario
-          </Link>
-          
-          <div className="flex gap-4">
-            <Link href="/explorar" className="text-gray-700 hover:text-blue-600">
-              Explorar
+import Link from "next/link";
+ 
+export default function Navbar() {
+ 
+    return (
+        <nav className="bg-slate-900 border-b border-slate-700 px-6 py-4 flex justify-between items-center">
+ 
+            <Link href="/" className="text-xl font-bold text-white hover: text-blue-400 transition-colors">
+                DevPort
             </Link>
-            
-            {isAuthenticated ? (
-              <>
-                <Link href="/dashboard" className="text-gray-700 hover:text-blue-600">
-                  Dashboard
+ 
+            <div className="flex items-center gap-6">
+                <Link href="/" className="text-slate-400 hover:text-white transition-colors">
+                    Inicio
                 </Link>
-                {userRole === 'chef' && (
-                  <Link href="/mis-recetas" className="text-gray-700 hover:text-blue-600">
-                    Mis Recetas
-                  </Link>
-                )}
-                <button className="text-red-600 hover:text-red-800">
-                  Cerrar Sesión
-                </button>
-              </>
-            ) : (
-              <>
-                <Link href="/login" className="text-gray-700 hover:text-blue-600">
-                  Iniciar Sesión
+                <Link href="/dashboard" className="text-slate-400 hover:text-white transition-colors">
+                    Dashboard
                 </Link>
-                <Link 
-                  href="/registro" 
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-                >
-                  Registrarse
+ 
+                <Link href="/login" className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg transition-colors">
+                    Login
                 </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-    </nav>
-  );
+            </div>
+        </nav>
+    )
 }
