@@ -1,58 +1,62 @@
 // src/components/PostCards.tsx
-import Image from 'next/image';
-
 interface PostCardsProps {
-  id: number;
+  id: number | string;
   Titulo: string;
   Autor: string;
   Colaborador: "Chef" | "Lector";
-  Tipo: "entrada" | "plato principal" | "postre";
+  Tipo: string;
   Descripcion: string;
   Tags: string[];
-  imagen?: string; // ← IMPORTANTE: agregar esta propiedad
+  imagen?: string;
 }
 
 export default function PostCards({
-  id,
   Titulo,
   Autor,
   Colaborador,
   Tipo,
   Descripcion,
   Tags,
-  imagen, // ← IMPORTANTE: recibir la propiedad
+  imagen,
 }: PostCardsProps) {
-  const tipoColors = {
+  // Colores según el tipo de receta
+  const tipoColors: Record<string, string> = {
     entrada: "bg-green-100 text-green-800",
     "plato principal": "bg-blue-100 text-blue-800",
     postre: "bg-yellow-100 text-yellow-800",
+    bebida: "bg-purple-100 text-purple-800",
+    otro: "bg-gray-100 text-gray-800",
   };
 
   const colaboradorIcon = Colaborador === "Chef" ? "👨‍🍳" : "👤";
+  const colorClass = tipoColors[Tipo] || tipoColors.otro;
 
   return (
     <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100">
-      {/* Imagen - Usando etiqueta img normal para URLs externas */}
+      {/* Imagen o placeholder */}
       <div className="h-48 bg-gray-200 relative">
         {imagen ? (
           <img
             src={imagen}
             alt={Titulo}
             className="w-full h-full object-cover"
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = 'none';
+            }}
           />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-blue-400 to-purple-500">
-            <span className="text-6xl">🍽️</span>
-          </div>
-        )}
+        ) : null}
+        <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-blue-400 to-purple-500">
+          <span className="text-6xl">🍽️</span>
+        </div>
       </div>
       
+      {/* Contenido de la tarjeta */}
       <div className="p-4">
         <h3 className="text-xl font-bold text-gray-800 mb-2 line-clamp-1">
           {Titulo}
         </h3>
         <div className="flex items-center justify-between mb-3">
-          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${tipoColors[Tipo]}`}>
+          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${colorClass}`}>
             {Tipo}
           </span>
           <span className="text-sm text-gray-500">

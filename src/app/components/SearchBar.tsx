@@ -1,29 +1,45 @@
-"use client"; // Esto indica que este componente se renderiza en el cliente
-
-// 1. Definimos las props que recibirá el componente 
+import { useState } from "react";
 interface SearchBarProps {
-    query: string; // El valor actual de la búsqueda
-    onQueryChange: (newQuery: string) => void; // Función que se llama cuando el valor de la búsqueda cambia
+  onSearch?: (term: string) => void;
 }
 
-// 2. El componente — recibe las props tipadas
+export default function SearchBar({ onSearch }: SearchBarProps) {
+  const [searchTerm, setSearchTerm] = useState("");
 
-export default function SearchBar({ query, onQueryChange }: SearchBarProps) { // Recibimos las props query y onQueryChange
-    return (
-        <div className="relative mb-8">
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    if (onSearch) {
+      onSearch(value);
+    }
+  };
 
-            <span className="absolute left-4 top-3.5 text-slate-400 text-lg">
-                Buscar
-            </span>
+  const clearSearch = () => {
+    setSearchTerm("");
+    if (onSearch) {
+      onSearch("");
+    }
+  };
 
-            <input
-                type="text"
-                value={query} // El valor del input es el query recibido por props
-                onChange={(e) => onQueryChange(e.target.value)} // Cuando el valor cambia, llamamos a onQueryChange con el nuevo valor
-                placeholder="Buscar por título, tag o autor..."
-                className="w-full bg-slate-800 text-white rounded-xl pl-24 pr-4 py-3 border border-slate-700 focus:outline-none focus:border-blue-500 transition-colors"
-            />
-        </div>
-    )
-
+  return (
+    <div className="max-w-md mx-auto">
+      <div className="relative">
+        <input
+          type="text"
+          placeholder="🔍 Buscar recetas..."
+          value={searchTerm}
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
+        {searchTerm && (
+          <button
+            onClick={clearSearch}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+          >
+            ✕
+          </button>
+        )}
+      </div>
+    </div>
+  );
 }
