@@ -6,30 +6,46 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { User } from "@supabase/supabase-js";
 
-interface NavbarProps {
-  user?: User | null;
-}
-
-export default function Navbar({ user = null }: NavbarProps) {
-  const [profile, setProfile] = useState<{ role: string } | null>(null);
+export default function Navbar() {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user) {
-      supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", user.id)
-        .single()
-        .then(({ data }) => setProfile(data));
-    }
-  }, [user]);
+    // Obtener la sesión actual
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user || null);
+      setLoading(false);
+    };
 
-  const isChef = profile?.role === "chef";
+    getSession();
+
+    // Escuchar cambios en la autenticación
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user || null);
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     window.location.href = "/";
   };
+
+  if (loading) {
+    return (
+      <nav className="bg-white shadow-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16 items-center">
+            <span className="font-bold text-xl text-blue-600">🍳 Recetario</span>
+          </div>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <nav className="bg-white shadow-md">
@@ -49,19 +65,6 @@ export default function Navbar({ user = null }: NavbarProps) {
                 <Link href="/dashboard" className="text-gray-700 hover:text-blue-600">
                   Dashboard
                 </Link>
-                {isChef && (
-                  <>
-                    <Link href="/mis-recetas" className="text-gray-700 hover:text-blue-600">
-                      Mis Recetas
-                    </Link>
-                    <Link 
-                      href="/crear-receta" 
-                      className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
-                    >
-                      + Crear Receta
-                    </Link>
-                  </>
-                )}
                 <span className="text-sm text-gray-500 hidden sm:inline">
                   👤 {user.email}
                 </span>
