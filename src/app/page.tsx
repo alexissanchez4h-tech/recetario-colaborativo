@@ -1,9 +1,10 @@
 // src/app/page.tsx
-import { supabase } from "../lib/supabaseClient";
-import SearchBar from "../components/SearchBar";
-import Link from "next/link";
+import { createClient } from "../lib/supabaseServer";
+import PostCards from "../components/PostCards";
 
 export default async function Home() {
+  const supabase = createClient();
+  
   const { data: recipes, error } = await supabase
     .from('recipes')
     .select(`
@@ -21,7 +22,7 @@ export default async function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/50 to-purple-50/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -31,9 +32,9 @@ export default async function Home() {
             Descubre y comparte recetas con la comunidad
           </p>
           <div className="mt-6">
-            <Link href="/explorar" className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+            <a href="/explorar" className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
               Ver todas las recetas →
-            </Link>
+            </a>
           </div>
         </div>
 
@@ -48,7 +49,7 @@ export default async function Home() {
             {recipes.map((recipe: any) => (
               <div 
                 key={recipe.id} 
-                className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow overflow-hidden"
+                className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft hover:shadow-xl transition-all duration-300 overflow-hidden border border-white/60 hover:scale-[1.02] hover:border-blue-200"
               >
                 <div className="h-48 bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center">
                   {recipe.imagen_url ? (
@@ -80,7 +81,7 @@ export default async function Home() {
                     <span className="text-sm text-gray-500">
                       ✍️ {recipe.profiles?.full_name || 'Anónimo'}
                     </span>
-                    <button className="text-blue-600 hover:text-blue-800 text-sm font-semibold">
+                    <button className="text-blue-600 hover:text-blue-800 text-sm font-semibold transition-colors">
                       Ver receta →
                     </button>
                   </div>

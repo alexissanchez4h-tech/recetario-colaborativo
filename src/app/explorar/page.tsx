@@ -1,5 +1,5 @@
 // src/app/explorar/page.tsx
-import { supabase } from "../../lib/supabaseClient";
+import { createClient } from "../../lib/supabaseServer";
 import SearchBar from "../../components/SearchBar";
 
 interface ExplorarPageProps {
@@ -9,6 +9,7 @@ interface ExplorarPageProps {
 }
 
 export default async function ExplorarPage({ searchParams }: ExplorarPageProps) {
+  const supabase = createClient();
   const query = searchParams?.q || "";
 
   // Construir la consulta
@@ -74,7 +75,6 @@ export default async function ExplorarPage({ searchParams }: ExplorarPageProps) 
                   key={recipe.id} 
                   className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft hover:shadow-xl transition-all duration-300 overflow-hidden border border-white/60 hover:scale-[1.02] hover:border-blue-200"
                 >
-                  {/* Imagen */}
                   <div className="h-48 bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center">
                     {recipe.imagen_url ? (
                       <img 
@@ -86,13 +86,10 @@ export default async function ExplorarPage({ searchParams }: ExplorarPageProps) 
                       <span className="text-6xl">🍽️</span>
                     )}
                   </div>
-                  
-                  {/* Contenido */}
                   <div className="p-4">
                     <h3 className="text-xl font-bold text-gray-800 mb-2">
                       {recipe.titulo}
                     </h3>
-                    
                     <div className="flex items-center justify-between mb-3">
                       <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">
                         {recipe.tipo || 'Receta'}
@@ -101,11 +98,9 @@ export default async function ExplorarPage({ searchParams }: ExplorarPageProps) 
                         👨‍🍳 {recipe.profiles?.full_name || 'Anónimo'}
                       </span>
                     </div>
-                    
                     <p className="text-gray-600 text-sm mb-3 line-clamp-2">
                       {recipe.descripcion || 'Sin descripción'}
                     </p>
-                    
                     {recipe.tags && recipe.tags.length > 0 && (
                       <div className="flex flex-wrap gap-2 mb-3">
                         {recipe.tags.slice(0, 3).map((tag: string) => (
@@ -115,7 +110,6 @@ export default async function ExplorarPage({ searchParams }: ExplorarPageProps) 
                         ))}
                       </div>
                     )}
-                    
                     <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                       <span className="text-sm text-gray-500">
                         ✍️ {recipe.profiles?.full_name || 'Anónimo'}

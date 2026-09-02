@@ -1,4 +1,6 @@
 // src/components/PostCards.tsx
+"use client";
+
 interface PostCardsProps {
   id: number | string;
   Titulo: string;
@@ -19,7 +21,6 @@ export default function PostCards({
   Tags,
   imagen,
 }: PostCardsProps) {
-  // Colores según el tipo de receta
   const tipoColors: Record<string, string> = {
     entrada: "bg-green-100 text-green-800",
     "plato principal": "bg-blue-100 text-blue-800",
@@ -31,26 +32,27 @@ export default function PostCards({
   const colaboradorIcon = Colaborador === "Chef" ? "👨‍🍳" : "👤";
   const colorClass = tipoColors[Tipo] || tipoColors.otro;
 
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    e.currentTarget.style.display = 'none';
+  };
+
   return (
-    <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100">
-      {/* Imagen o placeholder */}
-      <div className="h-48 bg-gray-200 relative">
+    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft hover:shadow-xl transition-all duration-300 overflow-hidden border border-white/60 hover:scale-[1.02] hover:border-blue-200">
+      {/* Imagen */}
+      <div className="h-48 bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center">
         {imagen ? (
           <img
             src={imagen}
             alt={Titulo}
             className="w-full h-full object-cover"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = 'none';
-            }}
+            onError={handleImageError}
           />
-        ) : null}
-        <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-blue-400 to-purple-500">
+        ) : (
           <span className="text-6xl">🍽️</span>
-        </div>
+        )}
       </div>
       
-      {/* Contenido de la tarjeta */}
+      {/* Contenido */}
       <div className="p-4">
         <h3 className="text-xl font-bold text-gray-800 mb-2 line-clamp-1">
           {Titulo}
@@ -78,7 +80,7 @@ export default function PostCards({
         </div>
         <div className="flex items-center justify-between pt-3 border-t border-gray-100">
           <span className="text-sm text-gray-500">✍️ {Autor}</span>
-          <button className="text-blue-600 hover:text-blue-800 text-sm font-semibold">
+          <button className="text-blue-600 hover:text-blue-800 text-sm font-semibold transition-colors">
             Ver receta →
           </button>
         </div>

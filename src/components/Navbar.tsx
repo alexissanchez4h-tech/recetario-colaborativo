@@ -3,15 +3,15 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { supabase } from "../lib/supabaseClient";
+import { createClient } from "../lib/supabaseClient";
 import { User } from "@supabase/supabase-js";
 
 export default function Navbar() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const supabase = createClient();
 
   useEffect(() => {
-    // Obtener la sesión actual
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user || null);
@@ -20,7 +20,6 @@ export default function Navbar() {
 
     getSession();
 
-    // Escuchar cambios en la autenticación
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setUser(session?.user || null);
@@ -65,6 +64,15 @@ export default function Navbar() {
                 <Link href="/dashboard" className="text-gray-700 hover:text-blue-600">
                   Dashboard
                 </Link>
+                <Link href="/mis-recetas" className="text-gray-700 hover:text-blue-600">
+                  Mis Recetas
+                </Link>
+                <Link 
+                  href="/crear-receta" 
+                  className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                >
+                  + Crear Receta
+                </Link>
                 <span className="text-sm text-gray-500 hidden sm:inline">
                   👤 {user.email}
                 </span>
@@ -82,7 +90,7 @@ export default function Navbar() {
                 </Link>
                 <Link 
                   href="/registro" 
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   Registrarse
                 </Link>

@@ -1,11 +1,36 @@
 // src/middleware.ts
+import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { supabase } from './lib/supabaseClient'
 
 export async function middleware(req: NextRequest) {
-  // Obtener la sesión directamente
+  const res = NextResponse.next()
+  
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return req.cookies.getAll()
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            req.cookies.set(name, value)
+          )
+          res.cookies.setAll(cookiesToSet)
+        },
+      },
+    }
+  )
+
   const { data: { session } } = await supabase.auth.getSession()
+
+  // Rutas públicas (no requieren autenticación)
+  const publicRoutes = ['/', '/explorar', '/login', '/registro', '/receta']
+  const isPublicRoute = publicRoutes.some(route => 
+    req.nextUrl.pathname === route || req.nextUrl.pathname.startsWith('/receta/')
+  )
 
   // Rutas protegidas
   const protectedRoutes = ['/dashboard', '/mis-recetas', '/crear-receta', '/editar-receta']
@@ -25,9 +50,16 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL('/dashboard', req.url))
   }
 
-  return NextResponse.next()
+  return res
 }
 
 export const config = {
-  matcher: ['/dashboard', '/mis-recetas', '/crear-receta', '/editar-receta/:path*', '/login', '/registro']
+  matcher: [
+    '/dashboard',
+    '/mis-recetas',
+    '/crear-receta',
+    '/editar-receta/:path*',
+    '/login',
+    '/registro'
+  ]
 }
