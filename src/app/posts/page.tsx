@@ -23,6 +23,4 @@ return NextResponse.redirect(new URL('/login', request.url))
 }
 return response
 }
-export const config = {
-matcher: ['/dashboard/:path*'],
-}
+
