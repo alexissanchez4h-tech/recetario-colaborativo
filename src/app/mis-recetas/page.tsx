@@ -2,11 +2,8 @@
 import { supabase } from "../lib/supabaseClient"; // Asegúrate de que esta ruta sea correcta
 import Link from "next/link";
 import { deleteRecipe } from "../lib/actions";
-import { cookies } from "next/headers"; // <--- 1. Importamos cookies
 
 export default async function MisRecetasPage() {
-  // <--- 2. Forzamos a que Next.js espere a que las cookies estén listas
-  const cookieStore = cookies();
   
   const { data: { user } } = await supabase.auth.getUser();
 

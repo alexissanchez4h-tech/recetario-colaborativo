@@ -1,6 +1,5 @@
 // src/app/page.tsx
 import { createClient } from "../lib/supabaseServer";
-import PostCards from "../components/PostCards";
 
 export default async function Home() {
   const supabase = createClient();
@@ -46,7 +45,7 @@ export default async function Home() {
           <p className="text-gray-500">No hay recetas disponibles.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {recipes.map((recipe: any) => (
+            {recipes.map((recipe) => (
               <div 
                 key={recipe.id} 
                 className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-soft hover:shadow-xl transition-all duration-300 overflow-hidden border border-white/60 hover:scale-[1.02] hover:border-blue-200"
