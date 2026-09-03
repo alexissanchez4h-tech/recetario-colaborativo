@@ -1,5 +1,5 @@
 // src/app/mis-recetas/page.tsx
-import { supabase } from "../lib/supabaseClient"; // Asegúrate de que esta ruta sea correcta
+import { supabase } from "../lib/supabaseClient"; 
 import Link from "next/link";
 import { deleteRecipe } from "../lib/actions";
 
