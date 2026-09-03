@@ -4,7 +4,6 @@ import Link from "next/link";
 import { deleteRecipe } from "../lib/actions";
 
 export default async function MisRecetasPage() {
-  
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
