@@ -1,7 +1,7 @@
 // src/app/crear-receta/page.tsx
 "use client";
 
-import { createRecipe } from "../lib/actions";
+import { createRecipe } from "../../lib/actions";
 import { useRouter } from "next/navigation";
 
 export default function CrearRecetaPage() {
